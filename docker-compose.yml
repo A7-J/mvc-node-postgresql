@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  # Nosso servidor de Banco de Dados SQL
+  banco_dados:
+    image: postgres:15-alpine # Versão estável e super leve
+    container_name: meu_postgres_mvc
+    environment:
+      POSTGRES_USER: arthur       # Seu usuário do banco
+      POSTGRES_PASSWORD: 123      # Sua senha do banco
+      POSTGRES_DB: escola_mvc     # Nome do banco de dados
+    ports:
+      - "5432:5432"               # Porta padrão do Postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data: # Isso garante que os dados não sumam ao desligar o PC

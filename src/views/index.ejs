@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Aluno (View)</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f6f9; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin-bottom: 20px; }
+        input { width: 95%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+        button.btn-add { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .btn-delete { background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 12px; }
+        .btn-delete:hover { background-color: #c82333; }
+        .student-info { display: flex; justify-content: space-between; width: 80%; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>🎓 Painel do Aluno (View)</h2>
+        <h3>Cadastrar Novo Estudante</h3>
+        <form action="/students" method="POST">
+            <input type="text" name="name" placeholder="Nome do Estudante" required>
+            <input type="text" name="course" placeholder="Curso" required>
+            <button type="submit" class="btn-add">Adicionar Aluno</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Estudantes Matriculados</h3>
+        <ul>
+            <% if (students && students.length > 0) { %>
+                <% students.forEach(student => { %>
+                    <li>
+                        <div class="student-info">
+                            <strong><%= student.name %></strong> 
+                            <span><%= student.course %></span>
+                        </div>
+                        <button class="btn-delete" onclick="deletarAluno('<%= student.id %>')">Excluir</button>
+                    </li>
+                <% }) %>
+            <% } else { %>
+                <p style="color: #777;">Nenhum estudante matriculado ainda.</p>
+            <% } %>
+        </ul>
+    </div>
+
+    <script>
+        async function deletarAluno(id) {
+            if (confirm("Tem certeza que deseja remover este estudante?")) {
+                try {
+                    // Faz uma requisição oculta de exclusão para o backend
+                    const resposta = await fetch(`/students/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (resposta.ok) {
+                        // Recarrega a página para atualizar a lista sem o aluno deletado
+                        window.location.reload();
+                    } else {
+                        alert("Erro ao excluir do servidor.");
+                    }
+                } catch (er) {
+                    console.error("Erro na requisição:", er);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
